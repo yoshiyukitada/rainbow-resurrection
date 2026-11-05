@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#090914">
+  <title>RAINBOW RESURRECTION</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="stage">
+    <canvas id="art"></canvas>
+    <div id="topline">
+      <span>RAINBOW RESURRECTION</span>
+      <span id="status">TOUCH TO MOVE</span>
+    </div>
+    <div id="player-wrap">
+      <div id="player"></div>
+      <div class="player-caption">OFFICIAL YOUTUBE PLAYER</div>
+    </div>
+    <div id="hint">PRESS &amp; SPIN · RELEASE TO PAUSE MUSIC</div>
+  </main>
+
+  <script>
+    // YouTube公式プレーヤーをページ内に表示します。
+    // 動画IDは、指定されたURLから取得しています。
+    let ytPlayer = null;
+    let ytReady = false;
+    let wantsMusic = false;
+
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('player', {
+        width: '200',
+        height: '200',
+        videoId: '5EyMNU8gxZs',
+        playerVars: {
+          playsinline: 1,
+          controls: 1,
+          rel: 0
+        },
+        events: {
+          onReady: function () {
+            ytReady = true;
+            if (wantsMusic) ytPlayer.playVideo();
+          },
+          onError: function () {
+            document.getElementById('status').textContent = 'VIDEO EMBED UNAVAILABLE';
+          }
+        }
+      });
+    }
+
+    function startMusic() {
+      wantsMusic = true;
+      if (ytReady && ytPlayer) {
+        ytPlayer.playVideo();
+        document.getElementById('status').textContent = 'MUSIC PLAYING';
+      } else {
+        document.getElementById('status').textContent = 'LOADING MUSIC…';
+      }
+    }
+
+    function pauseMusic() {
+      wantsMusic = false;
+      if (ytReady && ytPlayer) {
+        ytPlayer.pauseVideo();
+        document.getElementById('status').textContent = 'MUSIC PAUSED';
+      }
+    }
+
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  </script>
+  <script src="game.js"></script>
+</body>
+</html>
